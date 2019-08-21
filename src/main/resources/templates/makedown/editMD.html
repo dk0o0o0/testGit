@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <title>Simple example - Editor.md examples</title>
+        <link rel="stylesheet" th:href="@{/makedown/css/style.css}" />
+        <link rel="stylesheet" th:href="@{/makedown/css/editormd.css}" />
+        <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+    </head>
+    <body>
+        <div id="layout">
+            <header>
+                <h1>编辑博客</h1>
+            </header>
+            <div id="test-editormd">
+                <textarea style="display:none;"></textarea>
+                <!-- 第二个隐藏文本域，用来构造生成的HTML代码，方便表单POST提交，这里的name可以任意取，后台接受时以这个name键为准 -->
+    			<textarea class="editormd-html-textarea" name="editormd-html-textarea" id="htmlContent"></textarea>
+            </div>
+        </div>
+        <script th:src="@{/makedown/js/jquery.min.js}" ></script>
+        <script th:src="@{/makedown/js/editormd.min.js}"></script>
+        <script th:inline="javascript">
+			var testEditor;
+
+            $(function() {
+                testEditor = editormd("test-editormd", {
+                    width   : "90%",
+                    height  : 640,
+                    syncScrolling : "single",
+                    path    : [[@{/makedown/lib/}]],
+                  	//这个配置在simple.html中并没有，但是为了能够提交表单，使用这个配置可以让构造出来的HTML代码直接在第二个隐藏的textarea域中，方便post提交表单。
+                    saveHTMLToTextarea : true
+                });
+            });
+            
+            $("#submitBtn").click(
+                    function () {
+                        alert("点击按钮了");
+                        submitblog();
+                    }
+                )
+                function submitblog() {
+                    var title = $("#title").val();
+                    var content = $("#content").val();
+                    var htmlContent = $("#htmlContent").val();
+                    $.ajax({
+                        url: "submitMD",
+                        data: {title: title, content:content,htmlContent:htmlContent},
+                        success:function () {
+                            alert("发布成功");
+                        },
+                        error:function () {
+                            alert("发布失败");
+                        }
+                    })
+                }
+        </script>
+    </body>
+</html>

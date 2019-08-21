@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>blog</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}"></link>
+    <link rel="stylesheet" th:href="@{/makedown/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/makedown/css/editormd.css}" />
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container">
+<br/>
+<h1>编辑博客</h1>
+<br/><br/>
+<div class="with:80%">
+    <form class="form-horizontal"   th:action="@{/blog/edit}" th:object="${blog}"  method="post">
+        <input type="hidden" name="id" th:value="*{id}" />
+        <div class="form-group">
+            <label for="title" class="col-sm-2 control-label">title</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="title"  id="title" th:value="*{title}" placeholder="title"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="summary" class="col-sm-2 control-label" >summary</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="summary" id="summary" th:value="*{summary}" placeholder="summary"/>
+            </div>
+        </div>
+        <div id="test-editormd">
+                <textarea style="display:none;" name="content" th:text="*{content}"></textarea>
+                <!-- 第二个隐藏文本域，用来构造生成的HTML代码，方便表单POST提交，这里的name可以任意取，后台接受时以这个name键为准 -->
+    			<textarea class="editormd-html-textarea" name="htmlContent" id="htmlContent" th:text="*{htmlContent}"></textarea>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input type="submit" value="Submit" class="btn btn-info" />
+                &nbsp; &nbsp; &nbsp;
+                <a href="/blog/list" th:href="@{/blog/list}" class="btn btn-info">Back</a>
+            </div>
+        </div>
+    </form>
+</div>
+		<script th:src="@{/makedown/js/jquery.min.js}"></script>
+        <script th:src="@{/makedown/js/editormd.min.js}"></script>
+        <script th:src="@{/makedown/lib/marked.min.js}"></script>
+        <script th:src="@{/makedown/lib/prettify.min.js}"></script>
+        <script th:src="@{/makedown/lib/raphael.min.js}"></script>
+        <script th:src="@{/makedown/lib/underscore.min.js}"></script>
+        <script th:src="@{/makedown/lib/sequence-diagram.min.js}"></script>
+        <script th:src="@{/makedown/lib/flowchart.min.js}"></script>
+        <script th:src="@{/makedown/lib/jquery.flowchart.min.js}"></script>
+        <!-- <script src="js/editormd.js"></script> -->
+        <script th:inline="javascript">
+            var testEditor;
+            $(function() {
+                testEditor = editormd("test-editormd", {
+                    width   : "90%",
+                    height  : 640,
+                    syncScrolling : "single",
+                    path    : [[@{/makedown/lib/}]],
+                  	<!-- 这个配置在simple.html中并没有，但是为了能够提交表单，使用这个配置可以让构造出来的HTML代码直接在第二个隐藏的textarea域中，方便post提交表单。-->
+                    saveHTMLToTextarea : true,
+                    imageUpload : true,
+                    imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                    imageUploadURL : "imageUpload",
+                    <!-- 上传图片成功后可以做一些自己的处理 -->
+                    onload: function () {
+                        //console.log('onload', this);
+                        //this.fullscreen();
+                        //this.unwatch();
+                        //this.watch().fullscreen();
+                        //this.width("100%");
+                        //this.height(480);
+                        //this.resize("100%", 640);
+                    },
+                    <!-- 开启表情包 -->
+                    emoji: true,
+                });
+            });
+        </script>
+</body>
+</html>
